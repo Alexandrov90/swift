@@ -1,50 +1,31 @@
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
-import java.time.Year;
+final class Person {
 
-class Person {
+    private String              firstName;
+    private String              lastName;
+    private char                gender;
+    private final LocalDate     dateOfBirth;
+    private short               height;
+    
+    private SecondaryEducation  education;
 
-    static short gradesCount = 4;
-
-    String firstName;
-    String lastName;
-    short yearBorn;
-    char gender;
-    float weight;
-    short height;
-    String occupation;
-    float[] grades;
-
-    Person(String firstName, String lastName, short yearBorn, char gender, float weight, short height, String occupation) {
-        this(firstName, lastName, yearBorn, gender, weight, height, occupation, null);
+    Person(String firstName, String lastName, char gender, short height, LocalDate dateOfBirth) {
+        
+        setFirstName(firstName);
+        setLastName(lastName);
+        setGender(gender);
+        setHeight(height);
+        
+        this.dateOfBirth = dateOfBirth;
     }
 
-    Person(String firstName, String lastName, short yearBorn, char gender, float weight, short height, String occupation, float[] grades) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.yearBorn = yearBorn;
-        this.gender = gender;
-        this.weight = weight;
-        this.height = height;
-        this.occupation = occupation;
-        this.grades = grades;
+    public short getAge() {
+        return (short) dateOfBirth.until(LocalDate.now(), ChronoUnit.YEARS);
     }
 
-    double getAverageGrade() {
-
-        float avgGrade = 0;
-
-        for (float grade : grades) {
-            avgGrade += grade;
-        }
-
-        return avgGrade / gradesCount;
-    }
-
-    short getAge() {
-        return (short) (Year.now().getValue() - yearBorn);
-    }
-
-    String getInfo() {
+    public String getInfo() {
 
         String heOrShe;
         String hisOrHer;
@@ -58,9 +39,13 @@ class Person {
         }
 
         String result = String.format("%s %s is %d years old.", firstName, lastName, getAge());
-        result += String.format(" %s was born in %d.", heOrShe, yearBorn);
-        result += String.format(" %s weight is %.1f and %s is %d cm tall.", hisOrHer, weight, heOrShe.toLowerCase(), height);
-        result += String.format(" %s is a %s with an average grade of %.3f.", heOrShe, occupation, getAverageGrade());
+        result += String.format(" %s was born in %d.", heOrShe, dateOfBirth.getYear());
+        result += String.format(" %s started %s on %s", heOrShe, education.getInstitutionName(), education.getEnrollmentDate());
+        if(education.isGraduated()){
+            result += String.format(" and finished on %s with a grade of %.3f.", education.getGraduationDate(), education.getFinalGrade());
+        } else{
+            result += String.format(" and is supposed to graduate on %s.", education.getGraduationDate());
+        }
 
         if (isUnderAged()) {
             result += String.format(" %s %s is under-aged.", firstName, lastName);
@@ -69,62 +54,49 @@ class Person {
         return result;
     }
 
-    boolean isUnderAged() {
+    public boolean isUnderAged() {
         return getAge() < 18;
     }
+    
+    // Accessors
 
-    String getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
-
-    void setFirstName(String newFirstName) {
-        this.firstName = newFirstName;
+    
+    public void setFirstName(String firstName) {
+       this.firstName = firstName;
     }
 
-    String getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    void setLastName(String newLastName) {
-        this.lastName = newLastName;
+    public void setLastName(String lastName) {
+       this.lastName = lastName;
+    }
+    
+    public char getGender(){
+        return gender;
+    }
+    
+    public void setGender(char gender) {
+       this.gender = gender;
+    }
+    
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    short getYearBorn() {
-        return yearBorn;
-    }
-
-    float getWeight() {
-        return weight;
-    }
-
-    void setWeight(float newWeight) {
-        this.weight = newWeight;
-    }
-
-    short getHeight() {
+    public short getHeight() {
         return height;
     }
 
-    void setHeight(short newHeight) {
-        this.height = newHeight;
+    public void setHeight(short height) {
+        this.height = height;
     }
-
-    String getOccupation() {
-        return occupation;
-    }
-
-    void setOccupation(String newOccupation) {
-        this.occupation = newOccupation;
-    }
-
-    float[] getGrades() {
-        return grades;
-    }
-
-    void setGrades(float grade1, float grade2, float grade3, float grade4) {
-        grades[0] = grade1;
-        grades[1] = grade2;
-        grades[2] = grade3;
-        grades[3] = grade4;
+    
+    public void addEducation(SecondaryEducation education){
+        this.education = education;
     }
 }

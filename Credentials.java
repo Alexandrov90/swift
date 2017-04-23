@@ -1,3 +1,5 @@
+package security;
+
 public class Credentials{
     private String      _username;
     private String      _password;

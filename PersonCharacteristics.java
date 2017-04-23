@@ -1,45 +1,48 @@
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class PersonCharacteristics{
 
-    public static Person[] enroll(){
+    public static void main(String []args){
+        
         Scanner sc = new Scanner(System.in);
         
         int n = sc.nextInt();
+        sc.nextLine();
         
-        Person[] people = new Person[n];
-
-        for(int i = 0; i < n ; i++){
-            sc.nextLine();
-            
-            String firstName = sc.nextLine();
-            String lastName = sc.nextLine();
-            char gender = sc.nextLine().toCharArray()[0];
-            short yearBorn = sc.nextShort();
-            float weight = sc.nextFloat();
-            short height = sc.nextShort();
-            sc.nextLine();
-            String occupation = sc.nextLine();
-            float[] grades = new float[Person.gradesCount];
-            for(int j = 0; j < Person.gradesCount; j++) {
-                float grade = sc.nextFloat();
-                grades[j] = grade;  
-            } 
-            
-            Person person = new Person(firstName, lastName, yearBorn, gender, weight, height, occupation, grades);
-            people[i] = person;
-        }
-        
-        return people;
-    }
-
-    public static void main(String []args){
-        
-        Person[] people = enroll();
-
-        for (Person person : people) {
+        for(int i = 0 ; i < n; i++){
+            Person person = readPerson(sc.nextLine());
             
             System.out.println(person.getInfo());
         }
+    }
+
+    private static Person readPerson(String data) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
+        
+        String[] split = data.split(";");
+        
+        String firstName = split[0];
+        String lastName = split[1];
+        char gender = Character.toUpperCase(split[2].toCharArray()[0]);
+        short height = Short.parseShort(split[3].trim());
+        LocalDate dateOfBirth = LocalDate.parse(split[4].trim(), formatter);
+
+        String institutionName = split[5].trim();
+        LocalDate enrollmentDate = LocalDate.parse(split[6].trim(), formatter);
+        LocalDate graduationDate = LocalDate.parse(split[7].trim(), formatter);
+        
+        SecondaryEducation education = new SecondaryEducation(institutionName, enrollmentDate, graduationDate);
+        
+        if(split.length >= 9){
+            education.gotGraduated(Float.parseFloat(split[8].trim()));
+        }
+        
+        Person person = new Person(firstName, lastName, gender, height, dateOfBirth);
+        person.addEducation(education);
+        
+        return person;
     }
 }
